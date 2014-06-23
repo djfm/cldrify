@@ -73,10 +73,13 @@ class AdminCldrifyController extends ModuleAdminController
 
 	public function postUpdateCountryNamesAction()
 	{
+		$updated = 1;
 		// List all languages, even unactive ones
 		$languages = Language::getLanguages(false);
 
 		$countries = Db::getInstance()->ExecuteS('SELECT * FROM '._DB_PREFIX_.'country');
+
+		$countryNameValidator = Country::$definition['fields']['name']['validate'];
 
 		foreach ($languages as $language)
 		{
@@ -88,12 +91,34 @@ class AdminCldrifyController extends ModuleAdminController
 				{
 					$iso_code = strtoupper($country['iso_code']);
 					$name = $this->module->getCLDRCountryName($iso_code, $locale);
-					echo "$name<br>";
+					if (!is_string($name))
+						$this->warnings[] = sprintf($this->l('Did not find translation for country "%s" in "%s".'), $iso_code, $locale);
+					else
+					{
+						if (Validate::$countryNameValidator($name))
+						{
+							Db::getInstance()->execute('DELETE FROM '._DB_PREFIX_.'country_lang WHERE id_country='.(int)$country['id_country'].' AND id_lang='.(int)$language['id_lang']);
+							$ok = Db::getInstance()->execute(
+								sprintf('INSERT INTO %1$scountry_lang(id_country, id_lang, name) VALUES(%2$s, %3$s, \'%4$s\')',
+									_DB_PREFIX_,
+									(int)$country['id_country'],
+									(int)$language['id_lang'],
+									psql($name)
+								)
+							);
+							if (!$ok)
+								$this->errors[] = sprintf($this->l('Could not insert translation for country "%s" in "%s". This is bad, your database is corrupted. Retry or edit translation manually.'), $iso_code, $locale);
+							else
+								$updated += 1;
+						}
+						else
+							$this->warnings[] = sprintf($this->l('PrestaShop considers this name (for country "%s") as invalid: "%s".'), $iso_code, $name);
+					}
 				}
 			}
 			else
 				$this->warnings[] = sprintf($this->l('Did no update language "%s": could not guess correct locale.'));
 		}
-
+		return array('updated' => $updated, 'nlanguagues' => count($languages));
 	}
 }

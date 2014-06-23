@@ -213,7 +213,7 @@ class Cldrify extends Module
 					$xmls[$path] = simplexml_load_file($path);
 
 				$xml = $xmls[$path];
-				$territories = $xml->xpath('localeDisplayNames/territories/territory[@type="'.$iso_code.'"]');
+				$territories = $xml->xpath('localeDisplayNames/territories/territory[@type="'.$iso_code.'" and not(@alt)]');
 				if (count($territories) === 1)
 				{
 					$territory = $territories[0];
