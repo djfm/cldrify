@@ -197,7 +197,6 @@ class Cldrify extends Module
 
 		list($language, $variant) = explode('-', $locale);
 		$language = Tools::strtolower($language);
-		$variant = Tools::strtoupper($variant);
 		$iso_code = Tools::strtoupper($iso_code);
 
 		$files_to_try = array(
