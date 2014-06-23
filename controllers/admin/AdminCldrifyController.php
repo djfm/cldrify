@@ -32,9 +32,7 @@ class AdminCldrifyController extends ModuleAdminController
 
 		$this->action = Tools::getValue('action');
 		if (!is_string($this->action) || !preg_match('/^\w+$/', $this->action))
-		{
 			$this->action = 'default';
-		}
 
 		$this->template = "{$this->action}.tpl";
 		parent::init();
@@ -62,9 +60,7 @@ class AdminCldrifyController extends ModuleAdminController
 	{
 		$got_cldr = $this->module->updateCLDR(false);
 		if ($got_cldr !== true)
-		{
 			$this->errors[] = sprintf($this->l('Could not update the CLDR data: %s. Most things will not work.'), $got_cldr);
-		}
 	}
 
 	public function getDefaultAction()
@@ -79,7 +75,7 @@ class AdminCldrifyController extends ModuleAdminController
 
 		$countries = Db::getInstance()->ExecuteS('SELECT * FROM '._DB_PREFIX_.'country');
 
-		$countryNameValidator = Country::$definition['fields']['name']['validate'];
+		$country_name_validator = Country::$definition['fields']['name']['validate'];
 
 		foreach ($languages as $language)
 		{
@@ -95,7 +91,7 @@ class AdminCldrifyController extends ModuleAdminController
 						$this->warnings[] = sprintf($this->l('Did not find translation for country "%s" in "%s".'), $iso_code, $locale);
 					else
 					{
-						if (Validate::$countryNameValidator($name))
+						if (Validate::$country_name_validator($name))
 						{
 							Db::getInstance()->execute('DELETE FROM '._DB_PREFIX_.'country_lang WHERE id_country='.(int)$country['id_country'].' AND id_lang='.(int)$language['id_lang']);
 							$ok = Db::getInstance()->execute(

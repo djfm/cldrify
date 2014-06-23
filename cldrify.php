@@ -108,18 +108,19 @@ class Cldrify extends Module
 	{
 		$base = realpath(dirname(__FILE__));
 		$separator = preg_match('#^/#', $base) ? '/' : '\\';
-		foreach (func_get_args() as $arg) {
+		foreach (func_get_args() as $arg)
 			$base .= $separator.trim($arg, '/\\');
-		}
 		return $base;
 	}
 
-	// Real work starts here
+	/**
+	* Real work starts below
+	*/
 
 	/**
 	* Download data from CLDR, only if not present (unless $force is true).
 	*/
-	public function updateCLDR($force=false)
+	public function updateCLDR($force = false)
 	{
 		require_once _PS_TOOL_DIR_.'/pclzip/pclzip.lib.php';
 
@@ -144,11 +145,11 @@ class Cldrify extends Module
 
 		$pcl = new PclZip($arch);
 
-		$unzipTo = $this->path('data', 'cldr');
-		if (!is_dir($unzipTo) && !mkdir($unzipTo))
-			return sprintf($this->l('Could not create folder "%s"', $unzipTo));
+		$unzip_to = $this->path('data', 'cldr');
+		if (!is_dir($unzip_to) && !mkdir($unzip_to))
+			return sprintf($this->l('Could not create folder "%s"', $unzip_to));
 
-		$ok = $pcl->extract(PCLZIP_OPT_PATH, $unzipTo);
+		$ok = $pcl->extract(PCLZIP_OPT_PATH, $unzip_to);
 
 		if (is_int($ok))
 			return $this->l('Could not extract CLDR archive');
@@ -156,7 +157,7 @@ class Cldrify extends Module
 		return true;
 	}
 
-	public function getLocale($prestaShopCode)
+	public function getLocale($presta_shop_code)
 	{
 		static $mapping = false;
 
@@ -177,7 +178,8 @@ class Cldrify extends Module
 			{
 				if ($headers === null)
 					$headers = $row;
-				else {
+				else
+				{
 					$row = array_combine($headers, $row);
 					$mapping[$row['prestashop_code']] = Tools::strtolower($row['locale']);
 				}
@@ -185,8 +187,8 @@ class Cldrify extends Module
 			fclose($h);
 		}
 
-		if (isset($mapping[$prestaShopCode]))
-			return $mapping[$prestaShopCode];
+		if (isset($mapping[$presta_shop_code]))
+			return $mapping[$presta_shop_code];
 
 		return false;
 	}
