@@ -43,8 +43,6 @@ class Cldrify extends Module
 
 		$this->displayName = $this->l('cldrify');
 		$this->description = $this->l('Use the CLDR to automatically populate certain localizable items in PrestaShop\'s database.');
-
-		$this->admin_tpl_path = $this->local_path.'views/templates/admin/';
 	}
 
 	/**
