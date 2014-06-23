@@ -179,7 +179,7 @@ class Cldrify extends Module
 				else
 				{
 					$row = array_combine($headers, $row);
-					$mapping[$row['prestashop_code']] = Tools::strtolower($row['locale']);
+					$mapping[$row['prestashop_code']] = $row['locale'];
 				}
 			}
 			fclose($h);
@@ -203,6 +203,8 @@ class Cldrify extends Module
 			$this->path('data', 'cldr', 'common', 'main', $language.'_'.$variant.'.xml'),
 			$this->path('data', 'cldr', 'common', 'main', $language.'.xml')
 		);
+
+		if (preg_match('/^sr/', $locale))ddd($locale);
 
 		foreach ($files_to_try as $path)
 		{
