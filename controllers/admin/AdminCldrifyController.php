@@ -75,6 +75,25 @@ class AdminCldrifyController extends ModuleAdminController
 	{
 		// List all languages, even unactive ones
 		$languages = Language::getLanguages(false);
-		
+
+		$countries = Db::getInstance()->ExecuteS('SELECT * FROM '._DB_PREFIX_.'country');
+
+		foreach ($languages as $language)
+		{
+			$code = $language['iso_code'];
+			$locale = $this->module->getLocale($code);
+			if ($locale)
+			{
+				foreach ($countries as $country)
+				{
+					$iso_code = strtoupper($country['iso_code']);
+					$name = $this->module->getCLDRCountryName($iso_code, $locale);
+					echo "$name<br>";
+				}
+			}
+			else
+				$this->warnings[] = sprintf($this->l('Did no update language "%s": could not guess correct locale.'));
+		}
+
 	}
 }

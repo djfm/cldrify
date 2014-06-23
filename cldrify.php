@@ -156,4 +156,73 @@ class Cldrify extends Module
 		return true;
 	}
 
+	public function getLocale($prestaShopCode)
+	{
+		static $mapping = false;
+
+		if ($mapping === false)
+		{
+			$csv = $this->path('data', 'language_mapping.csv');
+
+			$mapping = array();
+
+			$h = fopen($csv, 'r');
+
+			if (!$h)
+				return false;
+
+			$row = null;
+			$headers = null;
+			while ($row = fgetcsv($h))
+			{
+				if ($headers === null)
+					$headers = $row;
+				else {
+					$row = array_combine($headers, $row);
+					$mapping[$row['prestashop_code']] = strtolower($row['locale']);
+				}
+			}
+			fclose($h);
+		}
+
+		if (isset($mapping[$prestaShopCode]))
+			return $mapping[$prestaShopCode];
+
+		return false;
+	}
+
+	public function getCLDRCountryName($iso_code, $locale)
+	{
+		static $xmls = array();
+
+		list($language, $variant) = explode('-', $locale);
+		$language = strtolower($language);
+		$variant = strtoupper($variant);
+		$iso_code = strtoupper($iso_code);
+
+		$files_to_try = array(
+			$this->path('data', 'cldr', 'common', 'main', $language.'_'.$variant.'.xml'),
+			$this->path('data', 'cldr', 'common', 'main', $language.'.xml')
+		);
+
+		foreach ($files_to_try as $path)
+		{
+			if (is_readable($path))
+			{
+				if (!isset($xmls[$path]))
+					$xmls[$path] = simplexml_load_file($path);
+
+				$xml = $xmls[$path];
+				$territories = $xml->xpath('localeDisplayNames/territories/territory[@type="'.$iso_code.'"]');
+				if (count($territories) === 1)
+				{
+					$territory = $territories[0];
+					return (string)$territory;
+				}
+			}
+		}
+
+		return false;
+	}
+
 }
