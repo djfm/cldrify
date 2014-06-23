@@ -44,7 +44,7 @@ class AdminCldrifyController extends ModuleAdminController
 	{
 		$methods = array(
 			'beforeAll',
-			strtolower($_SERVER['REQUEST_METHOD']).ucfirst($this->action).'Action'
+			Tools::strtolower($_SERVER['REQUEST_METHOD']).Tools::ucfirst($this->action).'Action'
 		);
 
 		foreach ($methods as $method)
@@ -89,7 +89,7 @@ class AdminCldrifyController extends ModuleAdminController
 			{
 				foreach ($countries as $country)
 				{
-					$iso_code = strtoupper($country['iso_code']);
+					$iso_code = Tools::strtoupper($country['iso_code']);
 					$name = $this->module->getCLDRCountryName($iso_code, $locale);
 					if (!is_string($name))
 						$this->warnings[] = sprintf($this->l('Did not find translation for country "%s" in "%s".'), $iso_code, $locale);

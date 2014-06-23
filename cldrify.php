@@ -179,7 +179,7 @@ class Cldrify extends Module
 					$headers = $row;
 				else {
 					$row = array_combine($headers, $row);
-					$mapping[$row['prestashop_code']] = strtolower($row['locale']);
+					$mapping[$row['prestashop_code']] = Tools::strtolower($row['locale']);
 				}
 			}
 			fclose($h);
@@ -196,9 +196,9 @@ class Cldrify extends Module
 		static $xmls = array();
 
 		list($language, $variant) = explode('-', $locale);
-		$language = strtolower($language);
-		$variant = strtoupper($variant);
-		$iso_code = strtoupper($iso_code);
+		$language = Tools::strtolower($language);
+		$variant = Tools::strtoupper($variant);
+		$iso_code = Tools::strtoupper($iso_code);
 
 		$files_to_try = array(
 			$this->path('data', 'cldr', 'common', 'main', $language.'_'.$variant.'.xml'),
