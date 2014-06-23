@@ -204,8 +204,6 @@ class Cldrify extends Module
 			$this->path('data', 'cldr', 'common', 'main', $language.'.xml')
 		);
 
-		if (preg_match('/^sr/', $locale))ddd($locale);
-
 		foreach ($files_to_try as $path)
 		{
 			if (is_readable($path))
