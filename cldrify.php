@@ -155,7 +155,7 @@ class Cldrify extends Module
 		return true;
 	}
 
-	public function getCLDRCode($prestashop_code)
+	public function getLanguageProperty($prestashop_code, $property)
 	{
 		static $mapping = false;
 
@@ -168,14 +168,28 @@ class Cldrify extends Module
 			if ($json_data)
 			{
 				foreach ($json_data['feed']['entry'] as $row)
-					$mapping[$row['gsx$prestashopcode']['$t']] = $row['gsx$cldrcode']['$t'];
+				{
+					$mapping[$row['gsx$prestashopcode']['$t']] = array();
+					foreach ($row as $key => $data)
+					{
+						$m = array();
+						if (preg_match('/^gsx\$(.*)/', $key, $m))
+							if ($m[1] !== 'prestashopcode')
+								$mapping[$row['gsx$prestashopcode']['$t']][$m[1]] = $data['$t'];
+					}
+				}
 			}
 		}
 
-		if (isset($mapping[$prestashop_code]))
-			return $mapping[$prestashop_code];
+		if (isset($mapping[$prestashop_code][$property]))
+			return $mapping[$prestashop_code][$property];
 
 		return false;
+	}
+
+	public function getCLDRCode($prestashop_code)
+	{
+		return $this->getLanguageProperty($prestashop_code, 'cldrcode');
 	}
 
 	public function getCLDRCountryName($iso_code, $locale)
