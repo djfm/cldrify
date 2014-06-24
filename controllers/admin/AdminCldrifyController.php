@@ -77,10 +77,12 @@ class AdminCldrifyController extends ModuleAdminController
 
 		$country_name_validator = Country::$definition['fields']['name']['validate'];
 
+
+		//http://spreadsheets.google.com/feeds/feed/key/1Qen07tZV6hX-schlXIP32N2VN85RbBUgidNWDhX1_mo/public/od6/values
 		foreach ($languages as $language)
 		{
 			$code = $language['iso_code'];
-			$locale = $this->module->getLocale($code);
+			$locale = $this->module->getCLDRCode($code);
 			if ($locale)
 			{
 				foreach ($countries as $country)

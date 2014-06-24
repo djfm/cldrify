@@ -155,38 +155,25 @@ class Cldrify extends Module
 		return true;
 	}
 
-	public function getLocale($presta_shop_code)
+	public function getCLDRCode($prestashop_code)
 	{
 		static $mapping = false;
 
 		if ($mapping === false)
 		{
-			$csv = $this->path('data', 'language_mapping.csv');
-
 			$mapping = array();
+			$mapping_url = 'https://spreadsheets.google.com/feeds/list/1Qen07tZV6hX-schlXIP32N2VN85RbBUgidNWDhX1_mo/0/public/values?alt=json';
+			$json_data = Tools::jsondecode(Tools::file_get_contents($mapping_url), true);
 
-			$h = fopen($csv, 'r');
-
-			if (!$h)
-				return false;
-
-			$row = null;
-			$headers = null;
-			while ($row = fgetcsv($h))
+			if ($json_data)
 			{
-				if ($headers === null)
-					$headers = $row;
-				else
-				{
-					$row = array_combine($headers, $row);
-					$mapping[$row['prestashop_code']] = $row['locale'];
-				}
+				foreach ($json_data['feed']['entry'] as $row)
+					$mapping[$row['gsx$prestashopcode']['$t']] = $row['gsx$cldrcode']['$t'];
 			}
-			fclose($h);
 		}
 
-		if (isset($mapping[$presta_shop_code]))
-			return $mapping[$presta_shop_code];
+		if (isset($mapping[$prestashop_code]))
+			return $mapping[$prestashop_code];
 
 		return false;
 	}
