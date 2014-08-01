@@ -108,7 +108,7 @@ class AdminCldrifyController extends ModuleAdminController
 				}
 			}
 			else
-				$this->warnings[] = sprintf($this->l('Did no update language "%s": could not guess correct locale.'));
+				$this->warnings[] = sprintf($this->l('Did not update language "%s": could not guess correct locale.', $language));
 		}
 		return array('updated' => $updated, 'nlanguagues' => count($languages));
 	}

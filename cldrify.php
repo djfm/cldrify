@@ -162,7 +162,7 @@ class Cldrify extends Module
 		if ($mapping === false)
 		{
 			$mapping = array();
-			$mapping_url = 'https://spreadsheets.google.com/feeds/list/1Qen07tZV6hX-schlXIP32N2VN85RbBUgidNWDhX1_mo/0/public/values?alt=json';
+			$mapping_url = 'https://spreadsheets.google.com/feeds/list/1Qen07tZV6hX-schlXIP32N2VN85RbBUgidNWDhX1_mo/1/public/values?alt=json';
 			$json_data = Tools::jsondecode(Tools::file_get_contents($mapping_url), true);
 
 			if ($json_data)
